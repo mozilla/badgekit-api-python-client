@@ -15,3 +15,9 @@ badges = client.get_badges(system='system-slug')
 for badge in badges:
     print badge['name']
 ```
+
+## Testing
+
+```
+python test
+```

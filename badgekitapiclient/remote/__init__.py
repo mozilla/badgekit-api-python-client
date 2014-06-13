@@ -19,6 +19,11 @@ class RemoteError (Exception):
         self.details = details
 
 
+errors = {
+    'ResourceNotFoundError': type(str('ResourceNotFoundError'), (RemoteError,), {}),
+    'MethodNotAllowedError': type(str('MethodNotAllowedError'), (RemoteError,), {}),
+}
+
 def make_url (endpoint, path, query=None):
     uri = urlparse.urljoin(endpoint, path);
 
@@ -38,18 +43,21 @@ def make_error (body, code):
     err_name = body.get('code') or body.get('error', {}).get('code', '')
     err_msg = body.get('message') or body.get('error', {}).get('message', '')
 
-    if err_name and not err_name.endswith('Error'):
-        err_name += 'Error';
+    if err_name:
+        if not err_name.endswith('Error'):
+            err_name += 'Error';
     else:
         err_name = error_name_from_status_code(code)
 
-    Err = type(str(err_name), (RemoteError,), {})
+    if err_name not in errors:
+        errors[err_name] = type(str(err_name), (RemoteError,), {})
 
-    return Err(err_msg, code, details=body.get('details'))
+    Error = errors[err_name]
+    return Error(err_msg, code, details=body.get('details'))
 
 
 def error_name_from_status_code (code):
-    return 'Http' + code + 'Error'
+    return 'Http' + str(code) + 'Error'
 
 
 class JWTAuth (requests.auth.AuthBase):
@@ -97,6 +105,9 @@ class Remote (object):
         self.endpoint = endpoint.rstrip('/')
         self._auth = auth
 
+    def _request (self, request):
+        return requests.request(**request)
+
     def _make_call (self, method, options):
         if type(options) is not dict:
             options = {'path': str(options)}
@@ -116,7 +127,7 @@ class Remote (object):
             # TO DO - encode file uploads
             request['data'] = json.dumps(options['data'])
 
-        response = requests.request(**request)
+        response = self._request(request)
         body = response.json()
 
         if response.status_code >= 400:
