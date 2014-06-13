@@ -13,18 +13,22 @@ def get_context (context, client):
         raise ContextError('Missing system')
 
     current_context = models.System(context['system'], client)
+    del context['system']
 
     if 'issuer' in context:
         current_context = models.Issuer(context['issuer'], current_context)
+        del context['issuer']
 
     if 'program' in context:
         if type(current_context) is not models.Issuer:
             raise ContextError('Missing issuer')
 
         current_context = models.Program(context['program'], current_context)
+        del context['program']
 
     if 'badge' in context:
         current_context = models.Badge(context['badge'], current_context)
+        del context['badge']
 
     return current_context
 

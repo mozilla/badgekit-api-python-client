@@ -2,7 +2,7 @@ from badgekitapiclient import models
 from badgekitapiclient.client.utils import context_requires, Generator
 
 @context_requires(models.System)
-def get_issuers (client, context, **kwargs):
+def get_issuers (client, context):
     options = {
         'path': context._path + models.Issuer.path_part,
         'filter': 'issuers',
@@ -13,19 +13,19 @@ def get_issuers (client, context, **kwargs):
     return client._remote.get(options)
 
 
-def get_issuer (client, context, **kwargs):
+def get_issuer (client, context):
     return _do_issuer_action(client, context, 'load')
 
 
-def create_issuer (client, context, **kwargs):
+def create_issuer (client, context):
     return _do_issuer_action(client, context, 'create')
 
 
-def delete_issuer (client, context, **kwargs):
+def delete_issuer (client, context):
     return _do_issuer_action(client, context, 'delete')
 
 
-def update_issuer (context, callback, **kwargs):
+def update_issuer (context, callback):
     return _do_issuer_action(client, context, 'save')
 
 

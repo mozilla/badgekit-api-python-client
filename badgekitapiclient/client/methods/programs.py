@@ -2,7 +2,7 @@ from badgekitapiclient import models
 from badgekitapiclient.client.utils import context_requires, Generator
 
 @context_requires(models.Issuer)
-def get_programs (client, context, **kwargs):
+def get_programs (client, context):
     options = {
         'path': context._path + models.Program.path_part,
         'filter': 'programs',
@@ -13,19 +13,19 @@ def get_programs (client, context, **kwargs):
     return client._remote.get(options)
 
 
-def get_program (client, context, **kwargs):
+def get_program (client, context):
     return _do_program_action(client, context, 'load')
 
 
-def create_program (client, context, **kwargs):
+def create_program (client, context):
     return _do_program_action(client, context, 'create')
 
 
-def delete_program (client, context, **kwargs):
+def delete_program (client, context):
     return _do_program_action(client, context, 'delete')
 
 
-def update_program (context, callback, **kwargs):
+def update_program (context, callback):
     return _do_program_action(client, context, 'save')
 
 

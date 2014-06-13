@@ -13,28 +13,28 @@ __all__ = [
 container_models = (models.System, models.Issuer, models.Program,)
 
 @context_requires(*container_models)
-def get_badges (client, context, **kwargs):
+def get_badges (client, context):
     return _find_badges(client, context)
 
 
 @context_requires(*container_models)
-def get_all_badges (client, context, **kwargs):
+def get_all_badges (client, context):
     return _find_badges(client, context, {'archived': 'any'})
 
 
-def get_badge (client, context, **kwargs):
+def get_badge (client, context):
     return _do_badge_action(client, context, 'load')
 
 
-def create_badge (client, context, **kwargs):
+def create_badge (client, context):
     return _do_badge_action(client, context, 'create')
 
 
-def delete_badge (client, context, **kwargs):
+def delete_badge (client, context):
     return _do_badge_action(client, context, 'delete')
 
 
-def update_badge (context, callback, **kwargs):
+def update_badge (context, callback):
     return _do_badge_action(client, context, 'save')
 
 

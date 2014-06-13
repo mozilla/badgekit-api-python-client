@@ -1,7 +1,7 @@
 from badgekitapiclient import models
 from badgekitapiclient.client.utils import context_requires, Generator
 
-def get_systems (client, **kwargs):
+def get_systems (client):
     options = {
         'path': client._path + models.System.path_part,
         'filter': 'systems',
@@ -12,19 +12,19 @@ def get_systems (client, **kwargs):
     return client._remote.get(options)
 
 
-def get_system (client, context, **kwargs):
+def get_system (client, context):
     return _do_system_action(client, context, 'load')
 
 
-def create_system (client, context, **kwargs):
+def create_system (client, context):
     return _do_system_action(client, context, 'create')
 
 
-def delete_system (client, context, **kwargs):
+def delete_system (client, context):
     return _do_system_action(client, context, 'delete')
 
 
-def update_system (context, callback, **kwargs):
+def update_system (context, callback):
     return _do_system_action(client, context, 'save')
 
 
