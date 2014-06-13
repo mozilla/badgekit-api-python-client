@@ -1,6 +1,5 @@
-import models
-from models._base import BaseModel
-from badgekitapiclient.remote import Response
+from badgekitapiclient import models
+from badgekitapiclient.models._base import BaseModel
 
 class ContextError (Exception):
     pass
@@ -58,10 +57,10 @@ class Generator (object):
         if data is None:
             return None
 
-        if isinstance(data, Response):
+        if type(data) == dict:
             return self._constructor(data, self._parent)
 
-        return (self(item) for item in data)
+        return [self._constructor(item, self._parent) for item in data]
 
     def preformat (self, data):
         if callable(self._preformat):

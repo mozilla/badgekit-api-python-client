@@ -133,8 +133,6 @@ class Remote (object):
         if 'default' in options and body is None:
             body = options['default']
 
-        body = Response(body)
-
         if generator is not None:
             body = generator(body)
 
@@ -154,7 +152,3 @@ class Remote (object):
 
     def delete (self, options):
         return self._make_call('delete', options)
-
-
-class Response (dict):
-    pass

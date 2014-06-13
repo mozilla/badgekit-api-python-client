@@ -1,5 +1,6 @@
 __all__ = ['Client']
 
+import inspect
 from types import MethodType
 from utils import get_context
 import methods
@@ -15,9 +16,17 @@ class Client (object):
 
 
 def bind (method, name):
+    requires_context = True
+
+    if inspect.isfunction(method):
+        args = inspect.getargspec(method).args
+        requires_context = ('context' in args)
+
     def api_method (self, context=None, *args, **kwargs):
-        context = get_context(context or kwargs, self)
-        return method(self, context, *args, **kwargs)
+        if requires_context or context is not None:
+            context = get_context(context or kwargs, self)
+            return method(self, context, *args, **kwargs)
+        return method(self, *args, **kwargs)
 
     bound_method = MethodType(api_method, None, Client)
     setattr(Client, name, bound_method)

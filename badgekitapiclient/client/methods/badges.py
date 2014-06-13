@@ -1,4 +1,4 @@
-from badgekitapiclient.client import models
+from badgekitapiclient import models
 from badgekitapiclient.client.utils import context_requires, Generator
 
 __all__ = [
