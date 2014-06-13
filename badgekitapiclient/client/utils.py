@@ -2,7 +2,21 @@ from badgekitapiclient import models
 from badgekitapiclient.models._base import BaseModel
 
 class ContextError (Exception):
-    pass
+    def __init__ (self, required, received=None):
+        if issubclass(required, BaseModel):
+            required = (required,)
+
+        if received is not None:
+            received = received.__name__
+
+        if len(required) == 1:
+            msg = 'Expecting type `%s`' % required[0].__name__
+        else:
+            msg = 'Expecting one of %s' % [model.__name__ for model in required]
+
+        Exception.__init__(self, '%s: received `%s`' % (msg, received))
+        self.required = required
+        self.received = received
 
 
 def get_context (context, client):
@@ -10,7 +24,7 @@ def get_context (context, client):
         return context
 
     if 'system' not in context:
-        raise ContextError('Missing system')
+        raise ContextError(models.System)
 
     current_context = models.System(context['system'], client)
     del context['system']
@@ -21,7 +35,7 @@ def get_context (context, client):
 
     if 'program' in context:
         if type(current_context) is not models.Issuer:
-            raise ContextError('Missing issuer')
+            raise ContextError(models.Issuer)
 
         current_context = models.Program(context['program'], current_context)
         del context['program']
@@ -36,9 +50,9 @@ def get_context (context, client):
 def context_requires (*required_models):
     def wrapper (method):
         def context_checker (client, context, *args, **kwargs):
-            if type(context) not in required_models:
-                # TO DO: raise exception here
-                pass
+            context_type = type(context)
+            if context_type not in required_models:
+                raise ContextError(required_models, context_type)
 
             return method(client, context, *args, **kwargs)
         return context_checker
