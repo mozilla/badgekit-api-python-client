@@ -1,8 +1,10 @@
-import system
-
 def get (request, query):
+    import chicago
+    import pittsburgh
+
     return {
         'systems': [
-            system.get(request, query)['system']
+            chicago.get(request, query)['system'],
+            pittsburgh.get(request, query)['system'],
         ]
     }

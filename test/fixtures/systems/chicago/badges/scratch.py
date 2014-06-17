@@ -1,0 +1,1 @@
+from ..issuers.library.programs.mit.badges.scratch import *
