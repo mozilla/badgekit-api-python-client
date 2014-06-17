@@ -9,9 +9,9 @@ class SystemsTestCase (tests.TestCase):
         systems = self.client.get_systems()
 
     def test_get_system (self):
-        system = self.client.get_system(system='system')
+        system = self.client.get_system(system='chicago')
 
-        self.assertEqual(system['slug'], 'system')
+        self.assertEqual(system['slug'], 'chicago')
         self.assertRaises(ResourceNotFoundError, self.client.get_system, system='not-found')
 
 

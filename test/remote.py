@@ -2,8 +2,15 @@ import badgekitapiclient
 from badgekitapiclient.remote import errors
 from urlparse import urlparse, parse_qsl
 
-ResourceNotFoundError = errors['ResourceNotFoundError']
+try:
+    import json
+except ImportError:
+    import simplejson
+
+
 MethodNotAllowedError = errors['MethodNotAllowedError']
+ResourceNotFoundError = errors['ResourceNotFoundError']
+ValidationError = errors['ValidationError']
 
 class Remote (badgekitapiclient.Remote):
 
@@ -15,17 +22,15 @@ class Remote (badgekitapiclient.Remote):
         method = request.get('method').lower()
         url = request.get('url')
 
+        if 'data' in request:
+            request['data'] = json.loads(request['data'])
+
         try:
             parts = urlparse(url)
             path = 'fixtures' + parts.path.replace('/', '.')
             module = __import__(path, fromlist=(method,))
 
             rsp = getattr(module, method)(request, dict(parse_qsl(parts.query)))
-            if type(rsp) == dict:
-                rsp = [rsp]
-
-            body = rsp[0]
-            status_code = rsp[1] if len(rsp) > 1 else 200
 
         except (AttributeError, TypeError):
             body = {
@@ -40,6 +45,13 @@ class Remote (badgekitapiclient.Remote):
                 'message': 'Not found: %s' % url
             }
             status_code = 404
+
+        else:
+            if type(rsp) == dict:
+                rsp = [rsp]
+
+            body = rsp[0]
+            status_code = rsp[1] if len(rsp) > 1 else 200
 
         return Response(body, status_code)
 
