@@ -14,6 +14,10 @@ class Client (object):
     def _path (self):
         return ''
 
+    @property
+    def _parent (self):
+        return None
+
 
 def bind (method, name):
     requires_context = True

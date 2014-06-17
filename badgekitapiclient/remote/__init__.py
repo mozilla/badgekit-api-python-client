@@ -20,8 +20,9 @@ class RemoteError (Exception):
 
 
 errors = {
-    'ResourceNotFoundError': type(str('ResourceNotFoundError'), (RemoteError,), {}),
-    'MethodNotAllowedError': type(str('MethodNotAllowedError'), (RemoteError,), {}),
+    'MethodNotAllowedError': type('MethodNotAllowedError', (RemoteError,), {}),
+    'ResourceNotFoundError': type('ResourceNotFoundError', (RemoteError,), {}),
+    'ValidationError': type('ValidationError', (RemoteError,), {}),
 }
 
 def make_url (endpoint, path, query=None):

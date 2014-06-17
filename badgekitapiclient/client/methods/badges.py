@@ -34,7 +34,7 @@ def delete_badge (client, context):
     return _do_badge_action(client, context, 'delete')
 
 
-def update_badge (context, callback):
+def update_badge (client, context):
     return _do_badge_action(client, context, 'save')
 
 
